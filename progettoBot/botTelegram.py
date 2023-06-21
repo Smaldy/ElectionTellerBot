@@ -2,6 +2,7 @@ import csv
 from telegram.ext import Updater, CommandHandler
 
 TOKEN = "5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k"
+èFunzionante = True
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Ciao! Usa il comando /info per visualizzare le mie funzioni!.")
@@ -37,7 +38,7 @@ def mostra_solo_donne(update,context):
 #funziona che mostra gli astenuti
 def astenuti(update,context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="funzione non ancora funzionante")
-
+ 
 #funzione che mostra dove votare
 def dove_votare(update,context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="funzione non ancora funzionante")
@@ -58,8 +59,9 @@ def info(update, context):
 
 #funzione per arrestare il bot
 def stop(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Bot arrestato.")
-    updater.stop()
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Bot arrestato sul dispositivo corrente.")
+    global èFunzionante
+    èFunzionante = False
 
 def main():
     global updater
@@ -88,6 +90,12 @@ def main():
     dispatcher.add_handler(mostraDoveVotare)
     updater.start_polling()
     updater.idle()
+
+    while èFunzionante:
+        try:
+            updater.idle()
+        except KeyboardInterrupt:
+            stop(None, None)
 
 if __name__ == '__main__':
     main()
