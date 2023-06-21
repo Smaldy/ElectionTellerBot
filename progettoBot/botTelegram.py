@@ -25,10 +25,22 @@ def mostra_candidati(update, context):
 
 #funzione che mostra la lista
 def mostra_liste(update,context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="funzione non ancora funzionante")
+    with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
+        reader = csv.reader(file)
+        first_row = next(reader)
+        lista = []
+        indice = [2,4,6];
+    for item in first_row:
+        lista.extend(item.split(';'))
+    listaSindaci = []
+    for i in indice:
+        listaSindaci.append(lista[i])
+
+    row_string = ', '.join(listaSindaci)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=row_string)
 
 #funzione che mostra il vincitore
-def mostra_vincitore(update,context):
+def mostra_vincitore(update,context): 
     context.bot.send_message(chat_id=update.effective_chat.id, text="funzione non ancora funzionante")
 
 #funziona che mostra solo_donne
