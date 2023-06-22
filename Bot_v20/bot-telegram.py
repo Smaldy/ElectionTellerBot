@@ -1,5 +1,5 @@
 from typing import Final
-
+import os
 import csv
 import numpy as np
 from telegram import Update
@@ -12,16 +12,16 @@ BOT_USERNAME: Final = '@GlustBot'
 matrix = None
 def load_data():
     global matrix
-    
     try:
-        with open('C:/Users/ayman/Documents/GitHub/ElectionTellerBot/progettoBot/Elezioni_Villafranca.CSV', 'r') as file:
+        file_name = 'Elezioni_Villafranca.CSV'
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, file_name)
+        with open(file_path, 'r') as file:
             csv_reader = csv.reader(file)
             matrix = np.array(list(csv_reader))
     except FileNotFoundError:
         print("File CSV non trovato.")
         matrix = np.array([])
-
-
 # Lets us use the /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('"Ciao! Usa il comando /info per visualizzare le mie funzioni!"')
