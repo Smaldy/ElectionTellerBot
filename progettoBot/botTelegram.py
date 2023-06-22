@@ -8,7 +8,6 @@ TOKEN = "5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k"
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Ciao! Usa il comando /info per visualizzare le mie funzioni!.")
 
-
 def matrice():
     with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
         reader = csv.reader(file)
@@ -41,9 +40,10 @@ def mostra_candidati(update, context):
 
         row_string = ', '.join(listaSindaci)
         context.bot.send_message(chat_id=update.effective_chat.id, text="I candidati per le elezioni di Villafranca sono: " + row_string +
-                                 " rispettivamente hanno ottenuto " + voti + " voti " + voti2 + " voti " + voti3)
+                                 " rispettivamente hanno ottenuto " + voti + " voti, " + voti2 + " voti, " + voti3 + " voti ")
         
 def mostra_liste(update,context):
+    matrix = matrice()
     with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
         reader = csv.reader(file)
         first_row = next(reader)
@@ -56,18 +56,23 @@ def mostra_liste(update,context):
         listaSindaci.append(lista[i])
 
     row_string = ', '.join(listaSindaci)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=row_string)
+    votiLista = seleziona_casella(matrix,920)
+    votiLista2 = seleziona_casella(matrix,922)
+    votiLista3 = seleziona_casella(matrix,924)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Le liste delle elezioni di Villafranca sono: " + row_string +
+                              " rispettivamente hanno ottenuto " + votiLista + " voti, " + votiLista2 + " voti, " + votiLista3 + " voti ")
 
 #funzione che mostra il vincitore
 def mostra_vincitore(update,context): 
+    matrix = matrice();
     with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
         reader = csv.reader(file)
         first_row = next(reader)
         lista = []
     for item in first_row:
         lista.extend(item.split(';'))
-    listaSindaci = [] 
-    context.bot.send_message(chat_id=update.effective_chat.id, text=lista[5])
+    votiVincitore = seleziona_casella(matrix,923)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="ha vinto le elezioni: " + lista[5] + " con " + votiVincitore + " voti")
 
 #funziona che mostra solo_donne
 def mostra_solo_donne(update,context):
