@@ -1,5 +1,6 @@
 import csv
 from telegram.ext import Updater, CommandHandler
+import pandas as pd
 
 TOKEN = "5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k"
 èFunzionante = True
@@ -7,23 +8,41 @@ TOKEN = "5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k"
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Ciao! Usa il comando /info per visualizzare le mie funzioni!.")
 
-#funzione lista_candidati
+
+def matrice():
+    with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        matrice = [riga[0] for riga in reader]
+    return matrice
+
+def seleziona_casella(matrix, index):
+    lista = []
+    for item in matrix:
+        lista.extend(item.split(";"))
+    valore = lista[index]
+    return valore
+
 def mostra_candidati(update, context):
+    matrix = matrice()
     with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
         reader = csv.reader(file)
         first_row = next(reader)
         lista = []
-        indice = [1,3,5];
-    for item in first_row:
-        lista.extend(item.split(';'))
-    listaSindaci = []
-    for i in indice:
-        listaSindaci.append(lista[i])
+        indice = [1, 3, 5]
 
-    row_string = ', '.join(listaSindaci)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=row_string)
+        for item in first_row:
+            lista.extend(item.split(';'))
+        listaSindaci = [lista[i] for i in indice]
 
-#funzione che mostra la lista
+        voti = seleziona_casella(matrix,919)
+        voti2 = seleziona_casella(matrix,921)
+        voti3 = seleziona_casella(matrix,923)
+
+        row_string = ', '.join(listaSindaci)
+        context.bot.send_message(chat_id=update.effective_chat.id, text="I candidati per le elezioni di Villafranca sono: " + row_string +
+                                 " rispettivamente hanno ottenuto " + voti + " voti " + voti2 + " voti " + voti3)
+        
 def mostra_liste(update,context):
     with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
         reader = csv.reader(file)
@@ -41,7 +60,14 @@ def mostra_liste(update,context):
 
 #funzione che mostra il vincitore
 def mostra_vincitore(update,context): 
-    context.bot.send_message(chat_id=update.effective_chat.id, text="funzione non ancora funzionante")
+    with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
+        reader = csv.reader(file)
+        first_row = next(reader)
+        lista = []
+    for item in first_row:
+        lista.extend(item.split(';'))
+    listaSindaci = [] 
+    context.bot.send_message(chat_id=update.effective_chat.id, text=lista[5])
 
 #funziona che mostra solo_donne
 def mostra_solo_donne(update,context):
@@ -102,6 +128,7 @@ def main():
     dispatcher.add_handler(mostraDoveVotare)
     updater.start_polling()
     updater.idle()
+    
 
     while èFunzionante:
         try:
