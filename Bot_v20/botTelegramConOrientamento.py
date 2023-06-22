@@ -7,10 +7,10 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-#with open("token.txt", "r") as f:
-#    TOKEN: Final = f.read()
 
-BOT_USERNAME: Final = '@GlustBot'
+TOKEN ='5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k'
+
+
 matrix = None
 def load_data():
     global matrix
@@ -24,7 +24,7 @@ def load_data():
     except FileNotFoundError:
         print("File CSV non trovato.")
         matrix = np.array([])
-################################################################################################
+
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -37,21 +37,22 @@ async def astenuti(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     totaleAstenuti = matrix[55, 9]
     print("ciao"+totaleAstenuti)
-    await update.message.reply_text(totaleAstenuti)
+    await update.message.reply_text("Nelle elezioni di Villafranca i cittadini che hanno deciso di non andare al seggio sono stati: "
+                                     + totaleAstenuti)
 
 async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
     
-    liste = matrix[0, 2] + matrix [0, 4] + matrix[0,6]
+    liste = "Le liste candidate alle elezioni di villafranca sono: " + matrix[0, 2] + matrix [0, 4] + matrix[0,6]
     await update.message.reply_text(liste)
 
 async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
-    lista_sindaci = matrix[0, 1] + matrix [0,3] + matrix[0,5]
+    lista_sindaci = "La lista dei candidati sindaci di villafranca sono: " + matrix[0, 1] + matrix [0,3] + matrix[0,5]
     await update.message.reply_text(lista_sindaci)
 
 """
@@ -99,7 +100,6 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "/mostraVincitore - Mostra il vincitore delle elezioni\n" \
                 "/liste - Mostra le liste\n" \
                 "/orientamenti - Mostra gli orientamenti politici in ogni sezione\n" \
-                "/Astenuti - Mostra il numero di astenuti\n" \
                 "/DoveVotare - Mostra i luoghi di voto\n" \
                 "/stop - Arresta il bot"
     await update.message.reply_text(info_text)
