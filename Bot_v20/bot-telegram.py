@@ -7,7 +7,9 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-TOKEN: Final = '6265945877:AAGeiaPR9mmYXT_6xCGo-gN5fGGyUqBuXAI'
+with open("token.txt", "r") as f:
+    TOKEN: Final = f.read()
+
 BOT_USERNAME: Final = '@GlustBot'
 matrix = None
 def load_data():
