@@ -7,8 +7,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-TOKEN: Final = '6265945877:AAGeiaPR9mmYXT_6xCGo-gN5fGGyUqBuXAI'
-BOT_USERNAME: Final = '@GlustBot'
+TOKEN: Final = '5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k'
+
 matrix = None
 def load_data():
     global matrix
@@ -52,9 +52,13 @@ async def lista_candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lista_sindaci = matrix[0, 1] + matrix [0,3] + matrix[0,5]
     await update.message.reply_text(lista_sindaci)
 
-
-
-
+async def mostra_liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if matrix is None or matrix.size == 0:
+        await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
+        return
+    
+    liste = matrix[0, 2] + matrix [0, 4] + matrix[0,6]
+    await update.message.reply_text(liste)
 
 # Log errors
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -70,6 +74,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('info', info))
     app.add_handler(CommandHandler('listacandidati', lista_candidati))
+    app.add_handler(CommandHandler('mostraListe',mostra_liste))
 
     # Log all errors
     app.add_error_handler(error)
