@@ -2,7 +2,7 @@ import pandas as pd
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-bot = Bot(token='TOKEN')
+bot = Bot(token='6282517420:AAEkxEga1MAlR7W2Sp1JnESO1SrUTGs2A6k')
 dp = Dispatcher(bot)
 button1 = KeyboardButton('Hello!')
 button2 = KeyboardButton('Youtube')
@@ -19,7 +19,7 @@ async def handle_messages(message: types.Message):
 
 @dp.message_handler(commands=['read_csv'])
 async def read_csv_handler(message: types.Message):
-    df = pd.read_csv('file.csv', delimiter=';')
+    df = pd.read_csv('Elezioni_Villafranca.csv', delimiter=';')
     for index, row in df.iterrows():
         values = ', '.join(row.astype(str))
         await message.answer(values)
