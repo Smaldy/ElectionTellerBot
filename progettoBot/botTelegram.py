@@ -1,26 +1,27 @@
 import csv
 from telegram.ext import Updater, CommandHandler
 
-TOKEN = "5963731424:AAFJR6VFiVqjaK8E0ieV8ayhkvIEr8h9R5k"
+TOKEN = "6265945877:AAGeiaPR9mmYXT_6xCGo-gN5fGGyUqBuXAI"
 èFunzionante = True
+
+matrice = []
+
+with open(r'C:\Users\ayman\Documents\GitHub\ElectionTellerBot\Bot_bottoni\Elezioni_Villafranca.CSV', 'r') as file:
+    reader = csv.reader(file, delimiter=';')
+    for row in reader:
+        matrice.append(row)
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Ciao! Usa il comando /info per visualizzare le mie funzioni!.")
 
 #funzione lista_candidati
 def mostra_candidati(update, context):
-    with open(r'C:\Users\39342\Desktop\progettoBot\Elezioni_Villafranca.csv', 'r') as file:
-        reader = csv.reader(file)
-        first_row = next(reader)
-        lista = []
-        indice = [1,3,5];
-    for item in first_row:
-        lista.extend(item.split(';'))
-    listaSindaci = []
-    for i in indice:
-        listaSindaci.append(lista[i])
+    riga= matrice[0]
+    lista_sindaci = []
+    for i in range(1,7,2):
+        lista_sindaci.append(riga[i])
 
-    row_string = ', '.join(listaSindaci)
+    row_string = ', '.join(lista_sindaci)
     context.bot.send_message(chat_id=update.effective_chat.id, text=row_string)
 
 #funzione che mostra la lista
