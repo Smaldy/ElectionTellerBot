@@ -87,7 +87,7 @@ async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE
     while i < 55:
         if(i%2 != 0):
             #sezioni = sezioni + str(matrix[i,0]+" ;")
-            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
+            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | 1° candidato "+matrix[i,1]+" | 2° candidato "+matrix[i,3]+" | 3° candidato "+matrix[i,5]+"\n"
         i+=1
 
     await update.message.reply_text(orientamento)
@@ -125,6 +125,8 @@ async def mostraVincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
         popolazione = "Ha vinto "+matrix[0,3]+" con "+matrix[55,3]+" votazioni"
     else:
         popolazione = "Ha vinto "+matrix[0,5]+" con "+matrix[55,5]+" votazioni"
+    
+    popolazione = popolazione + "\n se vuoi saperne di piu usa /datiElezioniSezioni"
 
     await update.message.reply_text(popolazione)
 
@@ -166,7 +168,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('astenuti', astenuti))
     app.add_handler(CommandHandler('Liste',liste))
     app.add_handler(CommandHandler('datiElezioniSezioni',datiElezioniSezioni))
-    app.add_handler(CommandHandler('mostraVincitore',mostraVincitore))
+    app.add_handler(CommandHandler('Vincitore',mostraVincitore))
     app.add_handler(CommandHandler('orientamentoPolitico',orientamentoPolitico))
 
 
