@@ -132,7 +132,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Run the program
 if __name__ == '__main__':
     load_data()
-    app = Application.builder().token('5819210026:AAECJTbhz0RGHL-l2W4l29yqgmLNIlsWzys').build()
+    app = Application.builder().token(TOKEN).build()
 
     # Commands
     app.add_handler(CommandHandler('start', start))
