@@ -64,6 +64,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ],
         [InlineKeyboardButton("Liste", callback_data="3"),
          InlineKeyboardButton("Candidati", callback_data="4")],
+        [
+        InlineKeyboardButton("Orrientamento", callback_data="5"),
+        InlineKeyboardButton("Vincitori", callback_data="6")
+        ],
+        [
+        InlineKeyboardButton("Votazioni delle Sezioni", callback_data="7")
+        ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -85,26 +92,75 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await liste(update, context)
     elif opzione == 4:
         await candidati(update, context)
+    elif opzione == 5:
+        await orientamento_Politico(update, context)
+    elif opzione == 6:
+        await Vincitore(update, context)
+    elif opzione == 7:
+        await datiElezioniSezioni(update, context)
 
+async def Vincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    popolazione =""#popolazione più di destra o di sinista
+
+    # per ogni riga controlla quale dei candidati ha vinto le elezioni
+    if(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
+        popolazione = "Ha vinto "+matrix[0,1]+" con "+matrix[55,1]+" votazioni"
+    elif(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
+        popolazione = "Ha vinto "+matrix[0,3]+" con "+matrix[55,3]+" votazioni"
+    else:
+        popolazione = "Ha vinto "+matrix[0,5]+" con "+matrix[55,5]+" votazioni"
+
+    await update.callback_query.message.edit_text(popolazione)
+
+async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if matrix is None or matrix.size == 0:
+        await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
+        return
+
+    i = 0
+    orientamento = "l'orientamento politico verrà presentato in questa disposizione\nSezione; e il numero di voti che anno preso "+matrix[0, 1] +" "+ matrix [0,3]+" "+ matrix[0,5]+"\n"
+    while i < 55:
+        if(i%2 != 0):
+            #sezioni = sezioni + str(matrix[i,0]+" ;")
+            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
+        i+=1
+
+    await update.callback_query.message.edit_text(orientamento)
 
 async def astenuti(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # 9 e 56
-    await update.callback_query.message.edit_text('il numero di astenuti è :')
+    # 9 e 56 totale astenuti
+    if matrix is None or matrix.size == 0:
+        await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
+        return
+    totaleAstenuti = matrix[55, 9]
+    print("ciao"+totaleAstenuti)
+    await update.callback_query.message.edit_text("Nelle elezioni di Villafranca i cittadini che hanno deciso di non andare al seggio sono stati: "
+                                     + totaleAstenuti)
 
 async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
     
-    liste = matrix[0, 2] + matrix [0, 4] + matrix[0,6]
+    liste = f"{matrix[0, 2]}\n{matrix [0, 4]}\n{matrix[0,6]}"
     await update.callback_query.message.edit_text(liste)
-    
+
+async def orientamento_Politico(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    popolazione #popolazione più di destra o di sinista
+
+    if(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
+        popolazione = "Ha vinto "+matrix[55,1]
+    elif(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
+        popolazione = "Ha vinto "+matrix[55,3]
+    else:
+        popolazione = "Ha vinto "+matrix[55,5]
+    await update.callback_query.message.edit_text(popolazione)
 
 async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
-    lista_sindaci = matrix[0, 1] + matrix [0,3] + matrix[0,5]
+    lista_sindaci = f"{matrix[0, 1]}\n{matrix [0,3]}\n{matrix[0,5]}"
     await update.callback_query.message.edit_text(lista_sindaci)
     
 
