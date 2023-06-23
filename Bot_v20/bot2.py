@@ -7,8 +7,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-with open("token.txt", "r") as f:
-    TOKEN: Final = f.read()
+#with open("token.txt", "r") as f:
+#    TOKEN: Final = f.read()
 
 BOT_USERNAME: Final = '@GlustBot'
 matrix = None
@@ -69,7 +69,7 @@ async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lista_sindaci = matrix[0, 1] + matrix [0,3] + matrix[0,5]
     await update.message.reply_text(lista_sindaci)
 
-"""
+
 async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
@@ -87,18 +87,42 @@ async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE
     while i < 55:
         if(i%2 != 0):
             #sezioni = sezioni + str(matrix[i,0]+" ;")
-            orientamento = orientamento +"; "+matrix[i,0]+"; "+matrix[i,1]+"; "+matrix[i,3]+"; "+matrix[i,5]+"\n"
+            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
         i+=1
 
     await update.message.reply_text(orientamento)
-"""
-async def orientamentiPoliticiSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def orientamentoPolitico(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Centrodestra Roberto Luca Dall'Oca
+    # Centrosinistra Matteo Melotti
+    # cittadino civico Mario Faccioli
+
+    i = 0
+    orientamento = ""
+    
+    # scorre tutta la colonna e somma una stringa in cui scrive per ogni sezione l'orientamento politico
+    while i < 55:
+        print
+        if(i % 2 != 0):
+            if(matrix[i,1] < matrix[i,3] and matrix[i,1] < matrix[i,5]):
+                orientamento= orientamento+"Nella sezione "+ matrix[i,0]+" c'è una maggioranza per il candidato civico\n"
+            elif(matrix[i,1] < matrix[i,3] and matrix[i,0] < matrix[i,5]):
+                orientamento= orientamento+"Nella sezione "+ matrix[i,0]+" c'è una maggioranza di centrosinista\n"
+            else:
+                orientamento= orientamento+"Nella sezione "+ matrix[i,0]+" c'è una maggioranza di centrodestra\n"
+        i+=1
+
+    await update.message.reply_text(orientamento)
+
+
+async def mostraVincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
     popolazione =""#popolazione più di destra o di sinista
 
+    # per ogni riga controlla quale dei candidati ha vinto le elezioni
     if(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
-        popolazione = "%f Ha vinto {matrix[0,1]} con {matrix[55,1]} votazioni"
+        popolazione = "Ha vinto "+matrix[0,1]+" con "+matrix[55,1]+" votazioni"
     elif(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
-        popolazione = "%f Ha vinto {matrix[0,3]} con {matrix[55,3]} votazioni"
+        popolazione = "Ha vinto "+matrix[0,3]+" con "+matrix[55,3]+" votazioni"
     else:
         popolazione = "Ha vinto "+matrix[0,5]+" con "+matrix[55,5]+" votazioni"
 
@@ -140,8 +164,10 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('candidati', candidati))
     app.add_handler(CommandHandler('astenuti', astenuti))
     app.add_handler(CommandHandler('Liste',liste))
-    #app.add_handler(CommandHandler('datiElezioniSezioni',datiElezioniSezioni))
-    app.add_handler(CommandHandler('orientamenti',orientamentiPoliticiSezioni))
+    app.add_handler(CommandHandler('datiElezioniSezioni',datiElezioniSezioni))
+    app.add_handler(CommandHandler('mostraVincitore',mostraVincitore))
+    app.add_handler(CommandHandler('orientamentoPolitico',orientamentoPolitico))
+
 
     # Log all errors
     app.add_error_handler(error)
