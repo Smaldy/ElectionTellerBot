@@ -142,11 +142,11 @@ async def orientamentoPolitico(update: Update, context: ContextTypes.DEFAULT_TYP
     while i< 55:
         if(i%2!=0):
             if(matrix[i,1] < matrix[i,3] and matrix[i,1] < matrix[i,5]):
-                orientamento = orientamento+ "Nella sezione "+matrix[i,0]+" c'è una maggioranza per il candidato civico\n"
+                orientamento += "Nella sezione "+matrix[i,0]+" c'è una maggioranza per il candidato civico\n"
             elif(matrix[i,1] < matrix[i,3] and matrix[i,0] < matrix[i,5]):
-                orientamento = orientamento+"Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrosinitra\n"
+                orientamento += "Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrosinitra\n"
             else:
-                orientamento = orientamento+ "Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrodestra\n"
+                orientamento += "Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrodestra\n"
         i+=1
     await update.callback_query.message.edit_text(orientamento)
 
@@ -164,7 +164,7 @@ async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE
     orientamento = "l'orientamento politico verrà presentato in questa disposizione\nSezione; e il numero di voti che anno preso "+matrix[0, 1] +" "+ matrix [0,3]+" "+ matrix[0,5]+"\n"
     while i < 55:
         if(i%2 != 0):
-            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
+            orientamento += "Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
         i+=1
 
     await update.callback_query.message.edit_text(orientamento)
@@ -194,10 +194,9 @@ async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def soloDonne(update: Update, context: ContextTypes.DEFAULT_TYPE):
     donne = ""
     i = 0
-    print("arrivato!!")
     while i < 55:
         if(i % 2 != 0):
-            donne += donne+"Sezione: "+matrix[i,0]+" votazioni: "+matrix[i,13]+"\n"
+            donne += "Sezione: "+matrix[i,0]+" votazioni: "+matrix[i,13]+"\n"
         i+=1
     
     await update.callback_query.message.edit_text(donne)
@@ -208,7 +207,7 @@ async def soloUomini(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     while i < 55:
         if(i%2 != 0):
-            uomini += uomini+"Sezioni: "+matrix[i,0]+" votazioni: "+matrix[i,12]+"\n"
+            uomini += "Sezioni: "+matrix[i,0]+" votazioni: "+matrix[i,12]+"\n"
         i+=1
     await update.callback_query.message.edit_text(uomini)
 
@@ -218,7 +217,7 @@ async def votanti(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     while i<55:
         if(i%2!=2):
-            votanti+=votanti+matrix[i,14]
+            votanti+=matrix[i,14]
     i+=1
     await update.callback_query.message.edit_text(votanti)
 
@@ -228,7 +227,7 @@ async def inscritti(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     while i<55:
         if(i%2!=0):
-            inscritti+= inscritti+"Sezioni: "+matrix[i,0]+" votanti:"+matrix[i,15]+"\n"
+            inscritti+= "Sezioni: "+matrix[i,0]+" votanti:"+matrix[i,15]+"\n"
         i+=1
     await update.callback_query.message.edit_text(inscritti)
 
