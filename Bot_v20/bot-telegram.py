@@ -50,33 +50,45 @@ def load_data():
     except FileNotFoundError:
         print("File CSV non trovato.")
         matrix = np.array([])
-################################################################################################
 
+###########################################################################################################################################
 
-
-
-
+# mostra in chat i bottoni - show in the chat the botton
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [
             InlineKeyboardButton("informazioni", callback_data="1"),
             InlineKeyboardButton("Astenuti", callback_data="2"),
         ],
-        [InlineKeyboardButton("Liste", callback_data="3"),
-         InlineKeyboardButton("Candidati", callback_data="4")],
         [
-        InlineKeyboardButton("Orrientamento", callback_data="5"),
-        InlineKeyboardButton("Vincitori", callback_data="6")
+            InlineKeyboardButton("Liste", callback_data="3"),
+            InlineKeyboardButton("Candidati", callback_data="4"),
         ],
         [
-        InlineKeyboardButton("Votazioni delle Sezioni", callback_data="7")
+            InlineKeyboardButton("Orrientamento", callback_data="5"),
+            InlineKeyboardButton("Vincitori", callback_data="6"),
+        ],
+        [
+            InlineKeyboardButton("Votazioni delle Sezioni", callback_data="7"),
+            InlineKeyboardButton("Solo donne", callback_data="8"),
+        ],
+        [
+            InlineKeyboardButton("Votanti", callback_data="9"),
+            InlineKeyboardButton("Solo uomini", callback_data="10"),
+        ],
+        [
+            InlineKeyboardButton("Votazioni attese", callback_data="11"),
+            InlineKeyboardButton("Inscritti", callback_data="12"),
+        ],
+        [
+            InlineKeyboardButton("Totale voti",callback_data="13"),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text("Ciao, Sono ElectionTeller", reply_markup=reply_markup)
 
-
+# settaggio dei bottoni - set of button
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   
     query = update.callback_query
@@ -98,9 +110,22 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await Vincitore(update, context)
     elif opzione == 7:
         await datiElezioniSezioni(update, context)
+    elif opzione == 8:
+        await soloDonne(update, context)
+    elif opzione == 9:
+        await votanti(update, context)
+    elif opzione == 10:
+        await soloUomini(update, context)
+    elif opzione == 11:
+        await votazioniAttese(update, context)
+    elif opzione == 12:
+        await inscritti(update, context)
+    elif opzione == 13:
+        await totaliVotiCandidati(update, context)
 
+# mostra il vicitore delle elezioni - show the winner of the election
 async def Vincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    popolazione =""#popolazione più di destra o di sinista
+    popolazione =""     #popolazione più di destra o di sinista
 
     # per ogni riga controlla quale dei candidati ha vinto le elezioni
     if(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
@@ -112,31 +137,35 @@ async def Vincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.callback_query.message.edit_text(popolazione)
 
+# mosta i risultati delle elezioni - show the result of the election 
 async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.message.reply_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
 
     i = 0
+
     orientamento = "l'orientamento politico verrà presentato in questa disposizione\nSezione; e il numero di voti che anno preso "+matrix[0, 1] +" "+ matrix [0,3]+" "+ matrix[0,5]+"\n"
     while i < 55:
         if(i%2 != 0):
-            #sezioni = sezioni + str(matrix[i,0]+" ;")
             orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
         i+=1
 
     await update.callback_query.message.edit_text(orientamento)
 
+# mostra gli astenuti alle elezioni
 async def astenuti(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # 9 e 56 totale astenuti
+    # 56 e 9 totale astenuti
     if matrix is None or matrix.size == 0:
         await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
+    
     totaleAstenuti = matrix[55, 9]
-    print("ciao"+totaleAstenuti)
+    
     await update.callback_query.message.edit_text("Nelle elezioni di Villafranca i cittadini che hanno deciso di non andare al seggio sono stati: "
                                      + totaleAstenuti)
 
+# mostra le liste dei candidati - show the list of candidate
 async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
@@ -145,6 +174,7 @@ async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
     liste = f"{matrix[0, 2]}\n{matrix [0, 4]}\n{matrix[0,6]}"
     await update.callback_query.message.edit_text(liste)
 
+# mostra chi ha vinto le elezioni - show the winner of the election
 async def orientamento_Politico(update: Update, context: ContextTypes.DEFAULT_TYPE):
     popolazione #popolazione più di destra o di sinista
 
@@ -156,15 +186,64 @@ async def orientamento_Politico(update: Update, context: ContextTypes.DEFAULT_TY
         popolazione = "Ha vinto "+matrix[55,5]
     await update.callback_query.message.edit_text(popolazione)
 
+async def soloDonne(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    donne = ""
+    i = 0
+    print("arrivato!!")
+    while i < 55:
+        if(i % 2 != 0):
+            donne += donne+"Sezione: "+matrix[i,0]+" votazioni: "+matrix[i,13]+"\n"
+        i+=1
+    
+    await update.callback_query.message.edit_text(donne)
+
+async def soloUomini(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    uomini = ""
+    i = 0
+
+    while i < 55:
+        if(i%2 != 0):
+            uomini += uomini+"Sezioni: "+matrix[i,0]+" votazioni: "+matrix[i,12]+"\n"
+        i+=1
+    await update.callback_query.message.edit_text(uomini)
+
+async def votanti(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    votanti = ""
+    i = 0
+
+    while i<55:
+        if(i%2!=2):
+            votanti+=votanti+matrix[i,14]
+    i+=1
+    await update.callback_query.message.edit_text(votanti)
+
+async def inscritti(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    inscritti = ""
+    i = 0
+
+    while i<55:
+        if(i%2!=0):
+            inscritti+= inscritti+"Sezioni: "+matrix[i,0]+" votanti:"+matrix[i,15]+"\n"
+        i+=1
+    await update.callback_query.message.edit_text(inscritti)
+
+async def votazioniAttese(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    votazioni = "Erano attese "+(matrix[57,16]-matrix[56,15])+" votazioni.\nHanno votato il "+matrix[58,15]+" ovvero "+matrix[59,15]
+    await update.callback_query.message.edit_text(votazioni)
+
+async def totaliVotiCandidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    totale = matrix[0,1]+ "ha preso "+matrix[57,1]+" votazioni.\n"+matrix[0,3]+"ha avuto "+matrix[57,3]+" votazioni.\n"+matrix[0,5]+" ha avuto "+matrix[57,5]+" votazioni."
+    await update.callback_query.message.edit_text(totale)
+
+# mostra i candidati
 async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
         await update.callback_query.message.edit_text(chat_id=update.effective_chat.id, text="Dati non disponibili.")
         return
     lista_sindaci = f"{matrix[0, 1]}\n{matrix [0,3]}\n{matrix[0,5]}"
     await update.callback_query.message.edit_text(lista_sindaci)
-    
 
-
+# mostra le informazioni riguardanti i comandi eseguibili
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     info_text = "Benvenuto! Questo è un bot per le elezioni di Villafranca.\n\n" \
                 "Ecco i comandi disponibili:\n" \
@@ -180,7 +259,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.message.edit_text(info_text)
 
 
-#####################################################################################################################
+############################################################################################################################################
 
 
 # Log errors
@@ -191,6 +270,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Run the program
 if __name__ == '__main__':
     load_data()
+    
     app = Application.builder().token(TOKEN).build()
 
     # Commands
