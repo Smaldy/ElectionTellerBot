@@ -93,7 +93,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     elif opzione == 4:
         await candidati(update, context)
     elif opzione == 5:
-        await orientamento_Politico(update, context)
+        await orientamentoPolitico(update, context)
     elif opzione == 6:
         await Vincitore(update, context)
     elif opzione == 7:
@@ -111,6 +111,22 @@ async def Vincitore(update: Update, context: ContextTypes.DEFAULT_TYPE):
         popolazione = "Ha vinto "+matrix[0,5]+" con "+matrix[55,5]+" votazioni"
 
     await update.callback_query.message.edit_text(popolazione)
+async def orientamentoPolitico(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    i=0
+    orientamento = ""
+    while i< 55:
+        if(i%2!=0):
+            if(matrix[i,1] < matrix[i,3] and matrix[i,1] < matrix[i,5]):
+                orientamento = orientamento+ "Nella sezione "+matrix[i,0]+" c'è una maggioranza per il candidato civico\n"
+            elif(matrix[i,1] < matrix[i,3] and matrix[i,0] < matrix[i,5]):
+                orientamento = orientamento+"Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrosinitra\n"
+            else:
+                orientamento = orientamento+ "Nella sezione "+matrix[i,0]+" c'è una maggioranza di centrodestra\n"
+        i+=1
+    await update.callback_query.message.edit_text(orientamento)
+
+
+
 
 async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
@@ -122,7 +138,7 @@ async def datiElezioniSezioni(update: Update, context: ContextTypes.DEFAULT_TYPE
     while i < 55:
         if(i%2 != 0):
             #sezioni = sezioni + str(matrix[i,0]+" ;")
-            orientamento = orientamento+"Sezione: "+matrix[i,0]+" | "+matrix[i,1]+" | "+matrix[i,3]+" | "+matrix[i,5]+"\n"
+            orientamento = orientamento+f"Sezione: matrix[i,0] | matrix[i,1] | matrix[i,3] | matrix[i,5]\n"
         i+=1
 
     await update.callback_query.message.edit_text(orientamento)
@@ -145,16 +161,6 @@ async def liste(update: Update, context: ContextTypes.DEFAULT_TYPE):
     liste = f"{matrix[0, 2]}\n{matrix [0, 4]}\n{matrix[0,6]}"
     await update.callback_query.message.edit_text(liste)
 
-async def orientamento_Politico(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    popolazione #popolazione più di destra o di sinista
-
-    if(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
-        popolazione = "Ha vinto "+matrix[55,1]
-    elif(matrix[55,1] < matrix[55,3] and matrix[55,1] < matrix[55,5]):
-        popolazione = "Ha vinto "+matrix[55,3]
-    else:
-        popolazione = "Ha vinto "+matrix[55,5]
-    await update.callback_query.message.edit_text(popolazione)
 
 async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if matrix is None or matrix.size == 0:
@@ -168,15 +174,15 @@ async def candidati(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     info_text = "Benvenuto! Questo è un bot per le elezioni di Villafranca.\n\n" \
                 "Ecco i comandi disponibili:\n" \
-                "/Astenuti - Mostra il numero di astenuti\n" \
-                "/start - Avvia il bot\n" \
-                "/info - Mostra le informazioni sul bot e i comandi disponibili\n" \
-                "/Candidati - Mostra i candidati sindaci\n" \
-                "/astenuti - Mostra il numero di astenuti\n" \
-                "/mostraVincitore - Mostra il vincitore delle elezioni\n" \
-                "/liste - Mostra le liste\n" \
-                "/DoveVotare - Mostra i luoghi di voto\n" \
-                "/stop - Arresta il bot"
+                "Astenuti: Mostra il numero di astenuti\n" \
+                "/start: - Avvia il bot\n" \
+                "info: Mostra le informazioni sul bot e i comandi disponibili\n" \
+                "Candidati: Mostra i candidati sindaci\n" \
+                "Astenuti: Mostra il numero di astenuti\n" \
+                "Vincitore: Mostra il vincitore delle elezioni\n" \
+                "liste: Mostra le liste\n" \
+                "DatiSezioniElezione: mostra le votazioni che hanno preso ogni candidato in ogni sezione\n" \
+                "orientamento politico: mostra per ogni sezione la maggioranza politica"
     await update.callback_query.message.edit_text(info_text)
 
 
